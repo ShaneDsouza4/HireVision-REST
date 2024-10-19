@@ -1,0 +1,48 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Sequelize
+config/config.json
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Database files
+*.sqlite
+
+# Build and compiled files
+dist/
+build/
+.tmp/
+
+# IDE and Editor-specific
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# Coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.pid
+
+# Misc
+!.gitkeep
