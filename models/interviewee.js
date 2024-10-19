@@ -1,10 +1,14 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Interviewee extends Model {
     static associate(models) {
-      // Define associations here, if needed
-      Interviewee.hasMany(models.Interview, { foreignKey: "interviewee" });
+      // One-to-One with Interview
+      Interviewee.hasOne(models.Interview, {
+        foreignKey: "interviewee",
+        as: "interview", // Alias for the interview
+      });
     }
   }
 

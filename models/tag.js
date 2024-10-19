@@ -1,11 +1,12 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Tag extends Model {
     static associate(models) {
-      // Define associations here, if needed
+      // Many-to-Many with Interview through InterviewTag
       Tag.belongsToMany(models.Interview, {
-        through: "interview_tag",
+        through: models.InterviewTag, // Use the join table model
         foreignKey: "tag_id",
       });
     }

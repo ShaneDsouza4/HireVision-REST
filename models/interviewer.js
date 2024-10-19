@@ -9,7 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Many-to-Many with Interview
+      Interviewer.belongsToMany(models.Interview, {
+        through: "Interview_Interviewers", // Join table
+        foreignKey: "interviewer_id",
+      });
+
+      // Many-to-One with BusinessArea
+      Interviewer.belongsTo(models.BusinessArea, {
+        foreignKey: "business_area_id",
+        as: "business_area",
+      });
     }
   }
 
