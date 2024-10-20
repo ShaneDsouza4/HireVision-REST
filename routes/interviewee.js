@@ -82,7 +82,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ message: "Interviewee not found" });
     }
     await interviewee.destroy();
-    res.status(204).json({ message: "Interviewee deleted successfully" });
+    res.status(200).json({ message: "Interviewee deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
