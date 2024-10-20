@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // Many-to-Many with Interview through InterviewTag
       Tag.belongsToMany(models.Interview, {
-        through: models.InterviewTag, // Use the join table model
+        through: models.InterviewTag, // Specify the join table model here
         foreignKey: "tag_id",
       });
     }
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Tag",
-      underscored: true, // Use snake_case in the DB
+      underscored: true,
       timestamps: true,
     }
   );

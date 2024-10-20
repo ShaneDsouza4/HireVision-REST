@@ -1,9 +1,12 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class InterviewTag extends Model {
     static associate(models) {
-      // Associations for the join table are not needed here
+      // Associate InterviewTag with Tag and Interview models
+      InterviewTag.belongsTo(models.Tag, { foreignKey: "tag_id" });
+      InterviewTag.belongsTo(models.Interview, { foreignKey: "interview_id" });
     }
   }
 
@@ -13,23 +16,19 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-          model: "Tags", // Name of the Tag table
+          model: "Tags", // Ensure this matches the table name for Tag
           key: "id",
         },
-        onDelete: "CASCADE", // Cascade on delete
+        onDelete: "CASCADE", // Ensure cascading delete for relational integrity
       },
       interview_id: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-          model: "Interviews", // Name of the Interview table
+          model: "Interviews", // Ensure this matches the table name for Interview
           key: "id",
         },
-        onDelete: "CASCADE", // Cascade on delete
-      },
-      date_time: {
-        type: DataTypes.DATE,
-        allowNull: false,
+        onDelete: "CASCADE", // Ensure cascading delete for relational integrity
       },
       created_at: {
         type: DataTypes.DATE,
@@ -43,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "InterviewTag",
-      underscored: true, // Use snake_case in the DB
+      underscored: true,
       timestamps: true,
     }
   );

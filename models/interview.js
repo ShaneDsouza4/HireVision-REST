@@ -1,35 +1,30 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Interview extends Model {
     static associate(models) {
-      // Many-to-One with BusinessArea
+      // Many-to-One with BusinessArea (alias added to avoid naming collision)
       Interview.belongsTo(models.BusinessArea, {
         foreignKey: "business_area",
-        as: "business_area",
+        as: "businessArea",
       });
 
       // Many-to-One with Job
-      Interview.belongsTo(models.Job, {
-        foreignKey: "job",
-        as: "job",
-      });
+      Interview.belongsTo(models.Job, { foreignKey: "job" });
 
       // One-to-One with Interviewee
-      Interview.belongsTo(models.Interviewee, {
-        foreignKey: "interviewee",
-        as: "interviewee",
-      });
+      Interview.belongsTo(models.Interviewee, { foreignKey: "interviewee" });
 
-      // Many-to-Many with Interviewer
+      // Many-to-Many with Interviewer through interview_interviewers join table
       Interview.belongsToMany(models.Interviewer, {
-        through: "Interview_Interviewers",
+        through: "interview_interviewers", // Ensure this join table exists in your migrations
         foreignKey: "interview_id",
       });
 
-      // Many-to-Many with Tag through InterviewTag
+      // Many-to-Many with Tag through InterviewTag join table
       Interview.belongsToMany(models.Tag, {
-        through: models.InterviewTag,
+        through: models.InterviewTag, // Make sure InterviewTag model exists and is defined
         foreignKey: "interview_id",
       });
     }

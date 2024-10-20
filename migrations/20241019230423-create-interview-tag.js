@@ -1,12 +1,13 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("InterviewTags", {
+    await queryInterface.createTable("interview_tags", {
+      // Changed to snake_case
       tag_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: "Tags",
+          model: "tags", // Ensure the model name is in lowercase
           key: "id",
         },
         onDelete: "CASCADE", // Ensure related records are removed on delete
@@ -15,7 +16,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: "Interviews",
+          model: "interviews", // Ensure the model name is in lowercase
           key: "id",
         },
         onDelete: "CASCADE",
@@ -36,7 +37,7 @@ module.exports = {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("InterviewTags");
+  async down(queryInterface) {
+    await queryInterface.dropTable("interview_tags"); // Changed to snake_case
   },
 };
