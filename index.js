@@ -11,9 +11,11 @@ app.use(express.json());
 
 // Import routes
 const businessAreaRoutes = require("./routes/businessArea");
+const interviewerRoutes = require("./routes/interviewer");
 
 // Use routes
 app.use("/api/businessareas", businessAreaRoutes);
+app.use("/api/interviewers", interviewerRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
