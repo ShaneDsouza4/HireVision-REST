@@ -4,7 +4,7 @@ npm-debug.log
 yarn-error.log
 
 # Sequelize
-config/config.js
+#config/config.js
 
 # Logs
 logs
