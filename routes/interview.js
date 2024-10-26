@@ -133,19 +133,19 @@ router.delete("/:id", async (req, res) => {
 
 // Get filtered interviews based on payload
 router.post("/filteredInterview", async (req, res) => {
-  const { from, to, ...filters } = req.body; // Destructure from and to dates from payload
+  const { from, to, ...filters } = req.body;
 
   try {
     const whereConditions = {};
 
-    // Add date range filter
+    // date range filter
     if (from && to) {
       whereConditions.date_time = {
         [Op.between]: [new Date(from), new Date(to)],
       };
     }
 
-    // Add additional filters from the payload
+    // Additional filters from the payload
     Object.keys(filters).forEach((key) => {
       if (filters[key] !== null) {
         whereConditions[key] = filters[key];
