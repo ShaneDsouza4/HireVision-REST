@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
-const config = require("../config/config.js"); // Adjust if config.js is located elsewhere
+const config = require("../config/config.js");
 
-// Initialize Sequelize with environment configuration
+// Initializing Sequelize with environment configuration
 const sequelize = new Sequelize(
   config.development.database,
   config.development.username,
@@ -12,7 +12,6 @@ const sequelize = new Sequelize(
   }
 );
 
-// Import all models
 const Interviewer = require("./interviewer")(sequelize, Sequelize.DataTypes);
 const Interview = require("./interview")(sequelize, Sequelize.DataTypes);
 const Interviewee = require("./interviewee")(sequelize, Sequelize.DataTypes);
@@ -21,7 +20,7 @@ const Job = require("./job")(sequelize, Sequelize.DataTypes);
 const Tag = require("./tag")(sequelize, Sequelize.DataTypes);
 const InterviewTag = require("./interviewtag")(sequelize, Sequelize.DataTypes);
 
-// Setup model associations
+// Model associations
 const models = {
   Interviewer,
   Interview,
@@ -32,14 +31,13 @@ const models = {
   InterviewTag,
 };
 
-// Call associate methods (if defined) to set up associations dynamically
+// Associate methods to set up associations dynamically
 Object.keys(models).forEach((modelName) => {
   if (models[modelName].associate) {
     models[modelName].associate(models);
   }
 });
 
-// Export Sequelize instance and models
 module.exports = {
   sequelize,
   ...models,
