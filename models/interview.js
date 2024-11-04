@@ -4,7 +4,7 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Interview extends Model {
     static associate(models) {
-      // Many-to-One with BusinessArea (alias added to avoid naming collision)
+      // Many-to-One with BusinessArea
       Interview.belongsTo(models.BusinessArea, {
         foreignKey: "business_area",
         as: "businessArea",
@@ -18,13 +18,13 @@ module.exports = (sequelize, DataTypes) => {
 
       // Many-to-Many with Interviewer through interview_interviewers join table
       Interview.belongsToMany(models.Interviewer, {
-        through: "interview_interviewers", // Ensure this join table exists in your migrations
+        through: "interview_interviewers",
         foreignKey: "interview_id",
       });
 
       // Many-to-Many with Tag through InterviewTag join table
       Interview.belongsToMany(models.Tag, {
-        through: models.InterviewTag, // Make sure InterviewTag model exists and is defined
+        through: models.InterviewTag,
         foreignKey: "interview_id",
       });
     }
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
       },
       interviewer: {
-        type: DataTypes.ARRAY(DataTypes.UUID), // Array of UUIDs for interviewers
+        type: DataTypes.ARRAY(DataTypes.UUID),
         allowNull: false,
       },
       business_area: {
@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Interview",
-      underscored: true, // Use snake_case in the DB
+      underscored: true,
       timestamps: true,
     }
   );
