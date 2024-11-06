@@ -3,11 +3,6 @@ const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Interviewer extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // Many-to-Many with Interview
       Interviewer.belongsToMany(models.Interview, {
@@ -37,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true, // Ensure email is unique
       },
       designation: {
         type: DataTypes.STRING,
@@ -45,6 +41,15 @@ module.exports = (sequelize, DataTypes) => {
       business_area_id: {
         type: DataTypes.UUID,
         allowNull: true,
+      },
+      employee_id: {
+        type: DataTypes.STRING, // Change to appropriate type as needed
+        allowNull: false,
+        unique: true, // Ensure employee ID is unique
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false, // Store the hashed password
       },
       created_at: {
         type: DataTypes.DATE,
@@ -58,7 +63,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Interviewer",
-      // Ensure Sequelize uses snake_case in the DB
       underscored: true,
       timestamps: true,
     }
