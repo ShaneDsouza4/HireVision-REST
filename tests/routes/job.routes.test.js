@@ -27,8 +27,6 @@ describe("Job Routes", () => {
         testServer = app.listen(3999);
     });
 
-    
-
     afterAll(() => {
         testServer.close();
         closeServer();
