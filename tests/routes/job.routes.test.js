@@ -118,6 +118,8 @@ describe("Job Routes", () => {
         });
     });
 
+    
+
     describe("DELETE /jobs/:id", () => {
         it("should delete a job by ID", async () => {
             const mockJob = { id: 1, title: "Developer", description: "Writes code" };
