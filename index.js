@@ -34,14 +34,21 @@ app.use((err, req, res, next) => {
 
 // Sync Sequelize and start server
 const PORT = process.env.PORT || 3000;
+let server;
 sequelize
   .sync({ force: false }) // 'force: true' will drop and re-create tables
   .then(() => {
     console.log("Database synced successfully.");
-    app.listen(PORT, () => {
+    server = app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
   })
   .catch((err) => {
     console.error("Failed to sync with database:", err.message);
   });
+
+function closeServer() {
+  server.close();
+}
+
+module.exports = { app, server, closeServer }; 
