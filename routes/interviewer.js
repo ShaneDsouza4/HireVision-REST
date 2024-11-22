@@ -3,15 +3,59 @@ const router = express.Router();
 const { Interviewer } = require("../models");
 const Joi = require("joi");
 
-// Joi schema for validating Interviewer
-const interviewerSchema = Joi.object({
-  name: Joi.string().min(3).max(50).required(),
-  email: Joi.string().email().required(),
-  designation: Joi.string().max(50).required(),
-  business_area_id: Joi.string().uuid().required(), // Assuming business_area_id is a UUID
-});
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Interviewer:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 50
+ *         email:
+ *           type: string
+ *           format: email
+ *         designation:
+ *           type: string
+ *           maxLength: 50
+ *         business_area_id:
+ *           type: string
+ *           format: uuid
+ */
 
-// Create an Interviewer
+/**
+ * @swagger
+ * tags:
+ *   name: Interviewers
+ *   description: API to manage interviewers
+ */
+
+/**
+ * @swagger
+ * /api/interviewers:
+ *   post:
+ *     summary: Create a new Interviewer
+ *     tags: [Interviewers]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Interviewer'
+ *     responses:
+ *       201:
+ *         description: Interviewer created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Interviewer'
+ *       400:
+ *         description: Validation Error
+ *       500:
+ *         description: Internal Server Error
+ */
 router.post("/", async (req, res) => {
   const { error } = interviewerSchema.validate(req.body);
   if (error) {
@@ -29,7 +73,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all Interviewers
+/**
+ * @swagger
+ * /api/interviewers:
+ *   get:
+ *     summary: Get all Interviewers
+ *     tags: [Interviewers]
+ *     responses:
+ *       200:
+ *         description: Retrieved all Interviewers successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Interviewer'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get("/", async (req, res) => {
   try {
     const interviewers = await Interviewer.findAll();
@@ -39,7 +100,32 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get an Interviewer by ID
+/**
+ * @swagger
+ * /api/interviewers/{id}:
+ *   get:
+ *     summary: Get an Interviewer by ID
+ *     tags: [Interviewers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The interviewer ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Retrieved Interviewer successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Interviewer'
+ *       404:
+ *         description: Interviewer not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get("/:id", async (req, res) => {
   try {
     const interviewer = await Interviewer.findByPk(req.params.id);
@@ -52,7 +138,40 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update an Interviewer by ID
+/**
+ * @swagger
+ * /api/interviewers/{id}:
+ *   put:
+ *     summary: Update an Interviewer by ID
+ *     tags: [Interviewers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The interviewer ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Interviewer'
+ *     responses:
+ *       200:
+ *         description: Interviewer updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Interviewer'
+ *       400:
+ *         description: Validation Error
+ *       404:
+ *         description: Interviewer not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.put("/:id", async (req, res) => {
   const { error } = interviewerSchema.validate(req.body);
   if (error) {
@@ -74,7 +193,28 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete an Interviewer by ID
+/**
+ * @swagger
+ * /api/interviewers/{id}:
+ *   delete:
+ *     summary: Delete an Interviewer by ID
+ *     tags: [Interviewers]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The interviewer ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Interviewer deleted successfully
+ *       404:
+ *         description: Interviewer not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.delete("/:id", async (req, res) => {
   try {
     const interviewer = await Interviewer.findByPk(req.params.id);

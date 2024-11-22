@@ -3,12 +3,50 @@ const router = express.Router();
 const { Tag } = require("../models");
 const Joi = require("joi");
 
-// Joi schema for validating Tag
-const tagSchema = Joi.object({
-  tag_name: Joi.string().min(3).max(50).required(),
-});
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Tag:
+ *       type: object
+ *       properties:
+ *         tag_name:
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 50
+ */
 
-// Create a Tag
+/**
+ * @swagger
+ * tags:
+ *   name: Tags
+ *   description: API to manage tags
+ */
+
+/**
+ * @swagger
+ * /api/tags:
+ *   post:
+ *     summary: Create a new Tag
+ *     tags: [Tags]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Tag'
+ *     responses:
+ *       201:
+ *         description: Tag created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Tag'
+ *       400:
+ *         description: Validation Error
+ *       500:
+ *         description: Internal Server Error
+ */
 router.post("/", async (req, res) => {
   const { error } = tagSchema.validate(req.body);
   if (error) {
@@ -26,7 +64,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all Tags
+/**
+ * @swagger
+ * /api/tags:
+ *   get:
+ *     summary: Get all Tags
+ *     tags: [Tags]
+ *     responses:
+ *       200:
+ *         description: Retrieved all tags successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Tag'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get("/", async (req, res) => {
   try {
     const tags = await Tag.findAll();
@@ -36,7 +91,32 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a Tag by ID
+/**
+ * @swagger
+ * /api/tags/{id}:
+ *   get:
+ *     summary: Get a Tag by ID
+ *     tags: [Tags]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The tag ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Retrieved tag successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Tag'
+ *       404:
+ *         description: Tag not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get("/:id", async (req, res) => {
   try {
     const tag = await Tag.findByPk(req.params.id);
@@ -49,7 +129,40 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update a Tag by ID
+/**
+ * @swagger
+ * /api/tags/{id}:
+ *   put:
+ *     summary: Update a Tag by ID
+ *     tags: [Tags]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The tag ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Tag'
+ *     responses:
+ *       200:
+ *         description: Tag updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Tag'
+ *       400:
+ *         description: Validation Error
+ *       404:
+ *         description: Tag not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.put("/:id", async (req, res) => {
   const { error } = tagSchema.validate(req.body);
   if (error) {
@@ -71,7 +184,28 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a Tag by ID
+/**
+ * @swagger
+ * /api/tags/{id}:
+ *   delete:
+ *     summary: Delete a Tag by ID
+ *     tags: [Tags]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The tag ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Tag deleted successfully
+ *       404:
+ *         description: Tag not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.delete("/:id", async (req, res) => {
   try {
     const tag = await Tag.findByPk(req.params.id);

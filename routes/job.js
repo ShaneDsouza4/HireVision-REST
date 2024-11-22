@@ -3,13 +3,53 @@ const router = express.Router();
 const { Job } = require("../models");
 const Joi = require("joi");
 
-// Joi schema for validating Job
-const jobSchema = Joi.object({
-  title: Joi.string().min(3).max(100).required(),
-  description: Joi.string().allow(null, "").max(255), // Optional field
-});
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Job:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           minLength: 3
+ *           maxLength: 100
+ *         description:
+ *           type: string
+ *           maxLength: 255
+ */
 
-// Create a Job
+/**
+ * @swagger
+ * tags:
+ *   name: Jobs
+ *   description: API to manage jobs
+ */
+
+/**
+ * @swagger
+ * /api/jobs:
+ *   post:
+ *     summary: Create a new Job
+ *     tags: [Jobs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Job'
+ *     responses:
+ *       201:
+ *         description: Job created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Job'
+ *       400:
+ *         description: Validation Error
+ *       500:
+ *         description: Internal Server Error
+ */
 router.post("/", async (req, res) => {
   const { error } = jobSchema.validate(req.body);
   if (error) {
@@ -27,7 +67,24 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all Jobs
+/**
+ * @swagger
+ * /api/jobs:
+ *   get:
+ *     summary: Get all Jobs
+ *     tags: [Jobs]
+ *     responses:
+ *       200:
+ *         description: Retrieved all jobs successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Job'
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get("/", async (req, res) => {
   try {
     const jobs = await Job.findAll();
@@ -37,7 +94,32 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a Job by ID
+/**
+ * @swagger
+ * /api/jobs/{id}:
+ *   get:
+ *     summary: Get a Job by ID
+ *     tags: [Jobs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The job ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Retrieved job successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Job'
+ *       404:
+ *         description: Job not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.get("/:id", async (req, res) => {
   try {
     const job = await Job.findByPk(req.params.id);
@@ -50,7 +132,40 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update a Job by ID
+/**
+ * @swagger
+ * /api/jobs/{id}:
+ *   put:
+ *     summary: Update a Job by ID
+ *     tags: [Jobs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The job ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Job'
+ *     responses:
+ *       200:
+ *         description: Job updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Job'
+ *       400:
+ *         description: Validation Error
+ *       404:
+ *         description: Job not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.put("/:id", async (req, res) => {
   const { error } = jobSchema.validate(req.body);
   if (error) {
@@ -72,7 +187,28 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a Job by ID
+/**
+ * @swagger
+ * /api/jobs/{id}:
+ *   delete:
+ *     summary: Delete a Job by ID
+ *     tags: [Jobs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The job ID
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Job deleted successfully
+ *       404:
+ *         description: Job not found
+ *       500:
+ *         description: Internal Server Error
+ */
 router.delete("/:id", async (req, res) => {
   try {
     const job = await Job.findByPk(req.params.id);
