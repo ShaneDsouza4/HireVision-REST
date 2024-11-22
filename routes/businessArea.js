@@ -37,10 +37,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const businessAreas = await BusinessArea.findAll();
-    res.status(200).json({
-      message: "Retrieved all Business Areas successfully",
-      businessAreas,
-    }); // 200 OK
+    res.status(200).json(businessAreas); // 200 OK
   } catch (err) {
     res.status(500).json({
       message: "Internal Server Error",

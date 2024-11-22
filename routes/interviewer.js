@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Interviewer } = require("../models");
 const Joi = require("joi");
+const { Op } = require("sequelize");
 
 // Joi schema for validating Interviewer
 const interviewerSchema = Joi.object({
@@ -33,6 +34,34 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const interviewers = await Interviewer.findAll();
+    res.status(200).json(interviewers);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Search for Interviewers by text (name or email)
+router.post("/search", async (req, res) => {
+  const { text } = req.body;
+
+  if (!text) {
+    try {
+      const interviewers = await Interviewer.findAll({ limit: 5 });
+      return res.status(200).json(interviewers);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  try {
+    const interviewers = await Interviewer.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.like]: `%${text}%` } },
+          { email: { [Op.like]: `%${text}%` } },
+        ],
+      },
+    });
     res.status(200).json(interviewers);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -1,6 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { Interview } = require("../models");
+const {
+  Interview,
+  Interviewer,
+  Interviewee,
+  InterviewTag,
+  Tag,
+  Job,
+  BusinessArea,
+} = require("../models");
 const Joi = require("joi");
 const { Op } = require("sequelize");
 
@@ -62,11 +70,36 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const interview = await Interview.findByPk(req.params.id);
-    if (!interview) {
-      return res.status(404).json({
-        message: "Interview not found",
-      });
-    }
+
+    const interviewers = await Interviewer.findAll({
+      where: { id: interview.interviewer },
+    });
+    interview.dataValues.interviewer = interviewers.map(
+      (interviewer) => interviewer
+    );
+
+    const interviewee = await Interviewee.findByPk(interview.interviewee);
+    interview.dataValues.interviewee = interviewee;
+
+    const job = await Job.findByPk(interview.job);
+    interview.dataValues.job = job;
+
+    const business_area = await BusinessArea.findByPk(interview.business_area);
+    interview.dataValues.business_area = business_area;
+
+    const tagIds = await InterviewTag.findAll({
+      where: { interview_id: interview.id },
+      attributes: ["tag_id"],
+    });
+
+    const tags = await Tag.findAll({
+      where: { id: tagIds.map((tag) => tag.tag_id) },
+      attributes: ["tag_name"],
+    });
+    const tagNames = tags.map((tag) => tag.tag_name);
+
+    interview.dataValues.tags = tagNames;
+
     res.status(200).json({
       message: "Retrieved Interview successfully",
       interview,
@@ -81,15 +114,6 @@ router.get("/:id", async (req, res) => {
 
 // Update an Interview by ID
 router.put("/:id", async (req, res) => {
-  // Validate the request body
-  const { error } = interviewSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({
-      message: "Validation Error",
-      error: error.details[0].message,
-    });
-  }
-
   try {
     const interview = await Interview.findByPk(req.params.id);
     if (!interview) {
@@ -147,7 +171,11 @@ router.post("/filteredInterview", async (req, res) => {
 
     // Additional filters from the payload
     Object.keys(filters).forEach((key) => {
-      if (filters[key] !== null) {
+      if (key === "interviewer") {
+        whereConditions[key] = {
+          [Op.contains]: filters[key],
+        };
+      } else if (filters[key] !== null) {
         whereConditions[key] = filters[key];
       }
     });

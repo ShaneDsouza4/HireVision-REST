@@ -60,12 +60,7 @@ router.post(
 
       res.status(201).json({
         message: "User registered successfully",
-        user: {
-          id: newUser.id,
-          name: newUser.name,
-          email: newUser.email,
-          employee_id: newUser.employee_id,
-        },
+        user: newUser,
       });
     } catch (error) {
       res
@@ -111,12 +106,7 @@ router.post(
       res.status(200).json({
         message: "Login successful",
         token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          employee_id: user.employee_id,
-        },
+        user,
       });
     } catch (error) {
       res

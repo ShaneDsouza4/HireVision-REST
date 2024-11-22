@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Job } = require("../models");
 const Joi = require("joi");
+const { Op } = require("sequelize");
 
 // Joi schema for validating Job
 const jobSchema = Joi.object({
@@ -31,6 +32,32 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const jobs = await Job.findAll();
+    res.status(200).json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Search Jobs by title
+router.post("/search", async (req, res) => {
+  const { title } = req.body;
+  if (!title) {
+    try {
+      const jobs = await Job.findAll({ limit: 5 });
+      return res.status(200).json(jobs);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  try {
+    const jobs = await Job.findAll({
+      where: {
+        title: {
+          [Op.iLike]: `%${title}%`,
+        },
+      },
+    });
     res.status(200).json(jobs);
   } catch (err) {
     res.status(500).json({ error: err.message });
