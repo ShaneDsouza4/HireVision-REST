@@ -1,15 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const { sequelize } = require("./models"); // Import sequelize instance
+const { sequelize } = require("./models");
 
-// Enable CORS
+// CORS
 app.use(cors());
 
 // Middleware for JSON parsing
 app.use(express.json());
 
-// Import routes
+// routes
 const businessAreaRoutes = require("./routes/businessArea");
 const jobRoutes = require("./routes/job");
 const tagRoutes = require("./routes/tag");
@@ -19,6 +19,9 @@ const interviewRoutes = require("./routes/interview");
 const authRoutes = require("./routes/auth");
 
 // Use routes
+app.get("/healthz", (req, res) => {
+  res.status(200).send("OK");
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/businessareas", businessAreaRoutes);
 app.use("/api/jobs", jobRoutes);
@@ -36,7 +39,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 let server;
 sequelize
-  .sync({ force: false }) // 'force: true' will drop and re-create tables
+  .sync({ force: false }) // 'force: false' to avoid drop and re-create tables in production
   .then(() => {
     console.log("Database synced successfully.");
     server = app.listen(PORT, () => {
@@ -51,4 +54,4 @@ function closeServer() {
   server.close();
 }
 
-module.exports = { app, server, closeServer }; 
+module.exports = { app, server, closeServer };

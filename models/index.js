@@ -1,16 +1,36 @@
 const Sequelize = require("sequelize");
 const config = require("../config/config.js");
+const environment = process.env.NODE_ENV;
+
+const dbConfig = config[environment];
 
 // Initializing Sequelize with environment configuration
-const sequelize = new Sequelize(
-  config.development.database,
-  config.development.username,
-  config.development.password,
-  {
-    host: config.development.host,
-    dialect: config.development.dialect,
+let sequelize;
+try {
+  if (dbConfig.use_env_variable) {
+    //Database URL pull from production
+    sequelize = new Sequelize(process.env[dbConfig.use_env_variable], {
+      dialect: dbConfig.dialect,
+      dialectOptions: dbConfig.dialectOptions,
+    });
+  } else {
+    sequelize = new Sequelize(
+      dbConfig.database,
+      dbConfig.username,
+      dbConfig.password,
+      {
+        host: dbConfig.host,
+        dialect: dbConfig.dialect,
+        port: dbConfig.port || 5432,
+        dialectOptions: dbConfig.dialectOptions,
+      }
+    );
   }
-);
+  console.log("Database connected successfully.");
+} catch (err) {
+  console.error("Failed to connect to the database:", err.message);
+  process.exit(1); //DB connection failure exit
+}
 
 const Interviewer = require("./interviewer")(sequelize, Sequelize.DataTypes);
 const Interview = require("./interview")(sequelize, Sequelize.DataTypes);
