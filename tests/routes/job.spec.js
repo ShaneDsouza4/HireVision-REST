@@ -24,7 +24,7 @@ describe("Job Routes", () => {
     });
 
     beforeAll(() => {
-        testServer = app.listen(3999);
+        testServer = app.listen(3006);
     });
 
     afterAll(() => {
